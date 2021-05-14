@@ -1,4 +1,4 @@
-import os, tarfile, subprocess, time, glob
+import os, tarfile, subprocess, time
 
 print(''' 
 --------------------------------------------------------
@@ -36,15 +36,6 @@ LD_LIBRARY_PATH = f"LD_LIBRARY_PATH={out_install}/lib:$LD_LIBRARY_PATH"
 CC = f"CC={out_install}/bin/mpicc"
 PATH = f"PATH={out_install}/bin:$PATH"
 
-# subprocess.run(f"export JASPERLIB={out_install}/lib", shell=True)
-# subprocess.run(f"export JASPERINC={out_install}/include", shell=True)
-# subprocess.run(f"export NETCDF={out_install}", shell=True)
-# subprocess.run(f"export PNETCDF={out_install}", shell=True)
-# subprocess.run(f"export HDF5={out_install}", shell=True)
-# subprocess.run(f"export PHDF5={out_install}", shell=True)
-
-#subprocess.run("export CC=gcc; export FC=gfortran; export F77=gfortran", shell=True)
-
 # LIBRARIES INSTALLATION
 # 1. ZLIB
 subprocess.run(f"./configure --prefix={out_install}; make check install", cwd=library_files[0][:-7] + "/", shell=True)
@@ -67,7 +58,7 @@ if use_hdf5 == "No" or use_hdf5 == "no" or use_hdf5 == "n":
 elif use_hdf5 == "" or use_hdf5 == "Yes" or use_hdf5 == "Y" or use_hdf5 == "yes":
     #MPICH
     subprocess.run(f"./configure --prefix={out_install} --with-device=ch3; make; make install", cwd=library_files[3][:-7] + "/", shell=True)
-    subprocess.run(f"export PATH={out_install}/bin:$PATH", shell=True)
+    subprocess.run(f"export {PATH}", shell=True)
     
     # HDF5
     subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --with-zlib={out_install} --enable-hl --enable-fortran --enable-parallel; make; make install", cwd=library_files[4][:-7] + "/", shell=True)
