@@ -63,30 +63,30 @@ elif use_hdf5 == "" or use_hdf5 == "Yes" or use_hdf5 == "Y" or use_hdf5 == "yes"
     # HDF5
     subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --with-zlib={out_install} --enable-hl --enable-fortran --enable-parallel; make; make install", cwd=library_files[4][:-7] + "/", shell=True)
     
-    # Netcdf-C
-    subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --disable-dap --enable-shared --enable-parallel-tests --enable-pnetcdf --enable-hdf5; make check install", cwd=library_files[6][:-7] + "/", shell=True)
-    
-    # Netcdf-Fortran
-    subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --enable-parallel-tests; make; make install", cwd=library_files[7][:-7] + "/", shell=True)
+    # Checking HDF5 libraries
+    hdf5_files = f"{out_install}/bin/h5dump"
+    if not(os.path.exists(hdf5_files)):
+        print(f"Please check HDF5 installation in {out_install}/bin")
 
-    #Pnetcdf
-    subprocess.run(f"{CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --with-mpi={out_install} --enable-fortran --enable-shared; make; make install", cwd=library_files[5][:-7] + "/", shell=True) 
+    else:
+        # Netcdf-C
+        subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --disable-dap --enable-shared --enable-parallel-tests --enable-pnetcdf --enable-hdf5; make check install", cwd=library_files[6][:-7] + "/", shell=True)
+
+        # Netcdf-Fortran
+        subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --enable-parallel-tests; make; make install", cwd=library_files[7][:-7] + "/", shell=True)
+
+        #Pnetcdf
+        subprocess.run(f"{CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --with-mpi={out_install} --enable-fortran --enable-shared; make; make install", cwd=library_files[5][:-7] + "/", shell=True) 
 
 # Checking libraries
 subprocess.run(f"{PATH}", shell=True)
 
 check_files = [f"{out_install}/bin/nc-config", f"{out_install}/bin/nf-config", f"{out_install}/bin/pnetcdf-config", f"{out_install}/bin/h5dump"] 
 
+#Stop time
+stp = time.localtime(); stp = time.strftime("%Y-%m-%d %H:%M %z", stp)
+
 if os.path.exists(check_files[0]) and os.path.exists(check_files[1]) and os.path.exists(check_files[2]) and os.path.exists(check_files[3]):
-
-    print('''
-    These library binaries were installed in:
-    ''')
-
-    subprocess.run("which mpicc mpirun h5dump nc-config nf-config pnetcdf-config", shell=True)
-
-    #Stop time
-    stp = time.localtime(); stp = time.strftime("%Y-%m-%d %H:%M %z", stp)
 
     print(f'''
     ------------------------------------------------
@@ -95,16 +95,19 @@ if os.path.exists(check_files[0]) and os.path.exists(check_files[1]) and os.path
 
     ------------------------------------------------
 
+    These library were installed in {out_install} directory
+
     These libraries were started installed in {strt}
     and ended in {stp}
 
-    You can continue to install WRF and WPS
+    You can continue to install WRF and WPS by typing 
+    on bash terminal:
 
-    To install WRF, type on bash terminal: 
-    python install_WRF.py
+    (WRF) 
+    python script/install_WRF.py
 
-    and after installing WRF finished, install WPS and type:
-    python install_WPS.py 
+    (WPS)
+    python script/install_WPS.py 
     ''')
 
 else:
