@@ -25,44 +25,44 @@ with open("requirements.txt","r") as tar_files:
     library_files = [line.rstrip() for line in tar_files]
 
 for lib_files in library_files:
-    tar = tarfile.open(lib_files, "r:gz")
+    tar = tarfile.open(lib_files + ".tar.gz", "r:gz")
     tar.extractall()
     tar.close()
 
 # Assign Environment Variable
 CPPFLAGS = f"CPPFLAGS=-I/{out_install}/include"
 LDFLAGS  = f"LDFLAGS=-L/{out_install}/lib"
-LD_LIBRARY_PATH = f"LD_LIBRARY_PATH={out_install}/lib:$LD_LIBRARY_PATH"
 CC = f"CC={out_install}/bin/mpicc"
 PATH = f"PATH={out_install}/bin:$PATH"
 
 # LIBRARIES INSTALLATION
+
 # 1. ZLIB
-subprocess.run(f"./configure --prefix={out_install}; make check install", cwd=library_files[0][:-7] + "/", shell=True)
+subprocess.run(f"./configure --prefix={out_install}; make check install", cwd=library_files[0] + "/", shell=True)
 
 # 2. PNG
-subprocess.run(f"{LDFLAGS} {CPPFLAGS} ./configure --prefix={out_install} --with-zlib-prefix={out_install}; make check install", cwd=library_files[1][:-7] + "/", shell=True)
+subprocess.run(f"{LDFLAGS} {CPPFLAGS} ./configure --prefix={out_install} --with-zlib-prefix={out_install}; make check install", cwd=library_files[1] + "/", shell=True)
 
 # 3. Jasper
-subprocess.run(f"{LDFLAGS} {CPPFLAGS} ./configure --prefix={out_install}; make check install", cwd=library_files[2][:-7] + "/", shell=True)
+subprocess.run(f"{LDFLAGS} {CPPFLAGS} ./configure --prefix={out_install}; make check install", cwd=library_files[2] + "/", shell=True)
 
 use_hdf5 = "Yes"
 
 if use_hdf5 == "No" or use_hdf5 == "no" or use_hdf5 == "n":
     netcdf_option = "--disable-netcdf-4"
     # Netcdf-C
-    subprocess.run(f"./configure --prefix={out_install} --disable-dap {netcdf_option}; make; make install", cwd=library_files[6][:-7] + "/", shell=True)
+    subprocess.run(f"./configure --prefix={out_install} --disable-dap {netcdf_option}; make; make install", cwd=library_files[6] + "/", shell=True)
 
     # # Netcdf-Fortran
-    subprocess.run(f"./configure --prefix={out_install} --disable-dap; make; make install", cwd=library_files[7][:-7] + "/", shell=True)
+    subprocess.run(f"./configure --prefix={out_install} --disable-dap; make; make install", cwd=library_files[7] + "/", shell=True)
 elif use_hdf5 == "" or use_hdf5 == "Yes" or use_hdf5 == "Y" or use_hdf5 == "yes":
     #MPICH
-    subprocess.run(f"./configure --prefix={out_install} --with-device=ch3; make; make install", cwd=library_files[3][:-7] + "/", shell=True)
+    subprocess.run(f"./configure --prefix={out_install} --with-device=ch3; make; make install", cwd=library_files[3] + "/", shell=True)
     subprocess.run(f"export {PATH}", shell=True)
-    
+
     # HDF5
-    subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --with-zlib={out_install} --enable-hl --enable-fortran --enable-parallel; make; make install", cwd=library_files[4][:-7] + "/", shell=True)
-    
+    subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --with-zlib={out_install} --enable-hl --enable-fortran --enable-parallel; make; make install", cwd=library_files[4] + "/", shell=True)
+
     # Checking HDF5 libraries
     hdf5_files = f"{out_install}/bin/h5dump"
     if not(os.path.exists(hdf5_files)):
@@ -70,13 +70,13 @@ elif use_hdf5 == "" or use_hdf5 == "Yes" or use_hdf5 == "Y" or use_hdf5 == "yes"
 
     else:
         # Netcdf-C
-        subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --disable-dap --enable-shared --enable-parallel-tests --enable-pnetcdf --enable-hdf5; make check install", cwd=library_files[6][:-7] + "/", shell=True)
+        subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --disable-dap --enable-shared --enable-parallel-tests --enable-pnetcdf --enable-hdf5; make check install", cwd=library_files[6] + "/", shell=True)
 
         # Netcdf-Fortran
-        subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --enable-parallel-tests; make; make install", cwd=library_files[7][:-7] + "/", shell=True)
+        subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --enable-parallel-tests; make; make install", cwd=library_files[7] + "/", shell=True)
 
         #Pnetcdf
-        subprocess.run(f"{CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --with-mpi={out_install} --enable-fortran --enable-shared; make; make install", cwd=library_files[5][:-7] + "/", shell=True) 
+        subprocess.run(f"{CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --with-mpi={out_install} --enable-fortran --enable-shared; make; make install", cwd=library_files[5] + "/", shell=True) 
 
 # Checking libraries
 subprocess.run(f"{PATH}", shell=True)

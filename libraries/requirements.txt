@@ -1,8 +1,8 @@
-zlib-1.2.11.tar.gz
-libpng-1.6.37.tar.gz
-jasper-1.900.1.tar.gz
-mpich-3.4.1.tar.gz
-hdf5-1.12.0.tar.gz
-pnetcdf-1.12.2.tar.gz
-netcdf-c-4.7.4.tar.gz
-netcdf-fortran-4.5.3.tar.gz
+zlib-1.2.11
+libpng-1.6.37
+jasper-1.900.1
+mpich-3.4.1
+hdf5-1.12.0
+pnetcdf-1.12.2
+netcdf-c-4.7.4
+netcdf-fortran-4.5.3
