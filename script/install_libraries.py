@@ -40,28 +40,32 @@ PATH = f"PATH={out_install}/bin:$PATH"
 # 1. ZLIB
 subprocess.run(f"./configure --prefix={out_install}; make check install", cwd=library_files[0] + "/", shell=True)
 
+# 2. cURL
+subprocess.run(f"./configure --prefix={out_install} --with-libssh --with-zlib={out_install}; make check install", cwd=library_files[1] + "/", shell=True)
+
 # 2. PNG
-subprocess.run(f"{LDFLAGS} {CPPFLAGS} ./configure --prefix={out_install} --with-zlib-prefix={out_install}; make check install", cwd=library_files[1] + "/", shell=True)
+subprocess.run(f"{LDFLAGS} {CPPFLAGS} ./configure --prefix={out_install} --with-zlib-prefix={out_install}; make check install", cwd=library_files[2] + "/", shell=True)
 
 # 3. Jasper
-subprocess.run(f"{LDFLAGS} {CPPFLAGS} ./configure --prefix={out_install}; make check install", cwd=library_files[2] + "/", shell=True)
+subprocess.run(f"{LDFLAGS} {CPPFLAGS} ./configure --prefix={out_install}; make check install", cwd=library_files[3] + "/", shell=True)
 
 use_hdf5 = "Yes"
 
 if use_hdf5 == "No" or use_hdf5 == "no" or use_hdf5 == "n":
     netcdf_option = "--disable-netcdf-4"
     # Netcdf-C
-    subprocess.run(f"./configure --prefix={out_install} --disable-dap {netcdf_option}; make; make install", cwd=library_files[6] + "/", shell=True)
+    subprocess.run(f"./configure --prefix={out_install} --disable-dap {netcdf_option}; make; make install", cwd=library_files[7] + "/", shell=True)
 
     # # Netcdf-Fortran
-    subprocess.run(f"./configure --prefix={out_install} --disable-dap; make; make install", cwd=library_files[7] + "/", shell=True)
+    subprocess.run(f"./configure --prefix={out_install} --disable-dap; make; make install", cwd=library_files[8] + "/", shell=True)
+
 elif use_hdf5 == "" or use_hdf5 == "Yes" or use_hdf5 == "Y" or use_hdf5 == "yes":
     #MPICH
-    subprocess.run(f"./configure --prefix={out_install} --with-device=ch3; make; make install", cwd=library_files[3] + "/", shell=True)
+    subprocess.run(f"./configure --prefix={out_install} --with-device=ch3; make; make install", cwd=library_files[4] + "/", shell=True)
     subprocess.run(f"export {PATH}", shell=True)
 
     # HDF5
-    subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --with-zlib={out_install} --enable-hl --enable-fortran --enable-parallel; make; make install", cwd=library_files[4] + "/", shell=True)
+    subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --with-zlib={out_install} --enable-hl --enable-fortran --enable-parallel; make; make install", cwd=library_files[5] + "/", shell=True)
 
     # Checking HDF5 libraries
     hdf5_files = f"{out_install}/bin/h5dump"
@@ -70,13 +74,13 @@ elif use_hdf5 == "" or use_hdf5 == "Yes" or use_hdf5 == "Y" or use_hdf5 == "yes"
 
     else:
         # Netcdf-C
-        subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --disable-dap --enable-shared --enable-parallel-tests --enable-pnetcdf --enable-hdf5; make check install", cwd=library_files[6] + "/", shell=True)
+        subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --enable-dap --enable-shared --enable-parallel-tests --enable-pnetcdf --enable-hdf5; make check install", cwd=library_files[7] + "/", shell=True)
 
         # Netcdf-Fortran
-        subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --enable-parallel-tests; make; make install", cwd=library_files[7] + "/", shell=True)
+        subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --enable-parallel-tests; make; make install", cwd=library_files[8] + "/", shell=True)
 
         #Pnetcdf
-        subprocess.run(f"{CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --with-mpi={out_install} --enable-fortran --enable-shared; make; make install", cwd=library_files[5] + "/", shell=True) 
+        subprocess.run(f"{CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --with-mpi={out_install} --enable-fortran --enable-shared; make; make install", cwd=library_files[6] + "/", shell=True) 
 
 # Checking libraries
 subprocess.run(f"{PATH}", shell=True)
