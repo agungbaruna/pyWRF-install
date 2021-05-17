@@ -57,7 +57,7 @@ if use_hdf5 == "No" or use_hdf5 == "no" or use_hdf5 == "n":
     subprocess.run(f"./configure --prefix={out_install} --disable-dap {netcdf_option}; make; make install", cwd=library_files[7] + "/", shell=True)
 
     # # Netcdf-Fortran
-    subprocess.run(f"./configure --prefix={out_install} --disable-dap; make; make install", cwd=library_files[8] + "/", shell=True)
+    subprocess.run(f"./configure --prefix={out_install}; make; make install", cwd=library_files[8] + "/", shell=True)
 
 elif use_hdf5 == "" or use_hdf5 == "Yes" or use_hdf5 == "Y" or use_hdf5 == "yes":
     #MPICH
@@ -73,14 +73,14 @@ elif use_hdf5 == "" or use_hdf5 == "Yes" or use_hdf5 == "Y" or use_hdf5 == "yes"
         print(f"Please check HDF5 installation in {out_install}/bin")
 
     else:
+        #Pnetcdf
+        subprocess.run(f"{CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --with-mpi={out_install} --enable-fortran --enable-shared; make; make install", cwd=library_files[6] + "/", shell=True)
+        
         # Netcdf-C
-        subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --enable-dap --enable-shared --enable-parallel-tests --enable-pnetcdf --enable-hdf5; make check install", cwd=library_files[7] + "/", shell=True)
+        subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --enable-dap --enable-parallel-tests --enable-pnetcdf --enable-hdf5; make check; make install", cwd=library_files[7] + "/", shell=True)
 
         # Netcdf-Fortran
-        subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --enable-parallel-tests; make; make install", cwd=library_files[8] + "/", shell=True)
-
-        #Pnetcdf
-        subprocess.run(f"{CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --with-mpi={out_install} --enable-fortran --enable-shared; make; make install", cwd=library_files[6] + "/", shell=True) 
+        subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --enable-parallel-tests; make; make install", cwd=library_files[8] + "/", shell=True) 
 
 # Checking libraries
 subprocess.run(f"{PATH}", shell=True)
