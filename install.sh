@@ -1,4 +1,4 @@
 #!/usr/bin/sh
-python script/install_libraries.py
-python wrf/install_WRF.py
-python wrf/install_WPS.py
+python3 script/install_libraries.py
+python3 script/install_WRF.py
+python3 script/install_WPS.py
