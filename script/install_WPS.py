@@ -35,7 +35,7 @@ str(input("Do you want continue to install WPS? [press ENTER]"))
 # Assign Environment Variable
 LDFLAGS  = f'LDFLAGS="-L{out_lib}/lib -L/usr/lib/x86_64-linux-gnu"'
 CPPFLAGS = f"CPPFLAGS=-I{out_lib}/include"
-LD_LIBRARY_PATH = f"LD_LIBRARY_PATH={out_lib}/lib:$LD_LIBRARY_PATH"
+LD_LIBRARY_PATH = f"LD_LIBRARY_PATH={out_lib}/lib:/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH"
 CC        = f"CC=/usr/bin/mpicc"
 FC        = f"FC=/usr/bin/mpif90"
 PATH      = f"PATH={out_lib}/bin:$PATH"
@@ -46,10 +46,10 @@ PNETCDF   = f"PNETCDF={out_lib}"
 HDF5      = f"HDF5={out_lib}"
 PHDF5     = f"PHDF5={out_lib}"
 
-#Installing WPS
-subprocess.run(f"export {JASPERINC} {JASPERLIB} {NETCDF} {PNETCDF} {HDF5} {PHDF5} {PATH} {LD_LIBRARY_PATH} {LDFLAGS} {CPPFLAGS}; ./configure; ./compile", shell=True, cwd=wps_dir)
+# Installing WPS
+subprocess.run(f"export {JASPERINC}; export {JASPERLIB}; export {NETCDF}; export {PNETCDF}; export {HDF5}; export {PHDF5}; export {PATH}; export {LD_LIBRARY_PATH}; export {LDFLAGS}; export {CPPFLAGS}; ./configure; ./compile", shell=True, cwd=wps_dir)
 
-#Check programs
+# Check programs
 check_files = glob.glob("*.exe")
 
 if os.path.exists(check_files[0]) and os.path.exists(check_files[1]) and os.path.exists(check_files[2]):

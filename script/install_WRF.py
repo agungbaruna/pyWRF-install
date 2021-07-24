@@ -35,7 +35,7 @@ str(input("Do you want continue to install WRF? [press ENTER]"))
 # Assign Environment Variable
 LDFLAGS  = f'LDFLAGS="-L{out_lib}/lib -L/usr/lib/x86_64-linux-gnu"'
 CPPFLAGS = f"CPPFLAGS=-I{out_lib}/include"
-LD_LIBRARY_PATH = f"LD_LIBRARY_PATH={out_lib}/lib:$LD_LIBRARY_PATH"
+LD_LIBRARY_PATH = f"LD_LIBRARY_PATH={out_lib}/lib:/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH"
 CC        = f"CC=/usr/bin/mpicc"
 FC        = f"FC=/usr/bin/mpif90"
 PATH      = f"PATH={out_lib}/bin:$PATH"
@@ -47,7 +47,7 @@ HDF5      = f"HDF5={out_lib}"
 PHDF5     = f"PHDF5={out_lib}"
 
 # Installing WRF
-subprocess.run(f"export {JASPERINC} {FC} {JASPERLIB} {NETCDF} {PNETCDF} {HDF5} {PHDF5} {PATH} {LD_LIBRARY_PATH} {LDFLAGS}; ./configure; ./compile em_real -j 4", shell=True, cwd=wrf_dir)
+subprocess.run(f"export {JASPERINC}; export {FC}; export {JASPERLIB}; export {NETCDF}; export {PNETCDF}; export {HDF5}; export {PHDF5}; export {PATH}; export {LD_LIBRARY_PATH}; export {LDFLAGS}; ./configure; ./compile em_real -j 4", shell=True, cwd=wrf_dir)
 
 # Finish
 # Check programs
