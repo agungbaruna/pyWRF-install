@@ -1,54 +1,55 @@
-import os, subprocess, tarfile, glob
+import os, subprocess, glob
 
-#Current directory
-cur_dir     = os.getcwd()
+user_computer = os.environ["HOME"]
+
+#WPS installed location
+out_lib = str(input(f"Type the directory of libraries were installed [default: {user_computer}/WRF-install]: "))
+
+if out_lib == "" : 
+    out_install = user_computer + "/WRF-install"
+    out_lib = user_computer + "/WRF-install/LIBRARIES"
 
 #Open directory
-wrf_wps_dir = cur_dir + "/wrf"
-os.chdir(wrf_wps_dir)
+wps_dir = out_install + "/WPS"
+
+# Warning
+input(f"WPS will install in {wps_dir} directory. Continue?")
+
+# Download WPS
+if not(os.path.exists(wps_dir)):
+    subprocess.run("git clone https://github.com/wrf-model/WPS", shell=True)
+    subprocess.run(f"mv WPS {wps_dir}", shell=True)
+
+os.chdir(wps_dir)
 
 #Print instruction
 print('''
-After you press enter button, you asked to choose one
-of compilers to compile WPS.
+After you press ENTER button, you asked to choose one
+of compiler.
 
                                 Hint: You can type "3" 
 ''')
 
-print(str(input("Do you want continue to install WPS? [press enter]")))
-
-#WRF path
-wps_path = wrf_wps_dir + "/WPS"
-old_path = wrf_wps_dir + "/WPS-4.2"
-out_install = cur_dir + "/out"
-
-#Extract WPS files
-wps = tarfile.open(old_path + ".tar.gz","r:gz")
-wps.extractall()
-wps.close()
-
-#Rename WPS files
-subprocess.run(f"mv {old_path} {wps_path}", shell=True)
+str(input("Do you want continue to install WPS? [press ENTER]"))
 
 # Assign Environment Variable
-LDFLAGS  = f"LDFLAGS=-L/{out_install}/lib"
-CPPFLAGS = f"CPPFLAGS=-I/{out_install}/include"
-LD_LIBRARY_PATH = f"LD_LIBRARY_PATH={out_install}/lib:$LD_LIBRARY_PATH"
-CC        = f"CC={out_install}/bin/mpicc"
-PATH      = f"PATH={out_install}/bin:$PATH"
-JASPERLIB = f"JASPERLIB={out_install}/lib"
-JASPERINC = f"JASPERINC={out_install}/include"
-NETCDF    = f"NETCDF={out_install}"
-PNETCDF   = f"PNETCDF={out_install}"
-HDF5      = f"HDF5={out_install}"
-PHDF5     = f"PHDF5={out_install}"
+LDFLAGS  = f'LDFLAGS="-L{out_lib}/lib -L/usr/lib/x86_64-linux-gnu"'
+CPPFLAGS = f"CPPFLAGS=-I{out_lib}/include"
+LD_LIBRARY_PATH = f"LD_LIBRARY_PATH={out_lib}/lib:$LD_LIBRARY_PATH"
+CC        = f"CC=/usr/bin/mpicc"
+FC        = f"FC=/usr/bin/mpif90"
+PATH      = f"PATH={out_lib}/bin:$PATH"
+JASPERLIB = f"JASPERLIB={out_lib}/lib"
+JASPERINC = f"JASPERINC={out_lib}/include"
+NETCDF    = f"NETCDF={out_lib}"
+PNETCDF   = f"PNETCDF={out_lib}"
+HDF5      = f"HDF5={out_lib}"
+PHDF5     = f"PHDF5={out_lib}"
 
 #Installing WPS
-os.chdir(wps_path)
-subprocess.run(f"export {JASPERINC} {JASPERLIB} {NETCDF} {PNETCDF} {HDF5} {PHDF5} {PATH} {LD_LIBRARY_PATH} {LDFLAGS} {CPPFLAGS}; ./configure; ./compile", shell=True, cwd=wps_path)
+subprocess.run(f"export {JASPERINC} {JASPERLIB} {NETCDF} {PNETCDF} {HDF5} {PHDF5} {PATH} {LD_LIBRARY_PATH} {LDFLAGS} {CPPFLAGS}; ./configure; ./compile", shell=True, cwd=wps_dir)
 
 #Check programs
-os.chdir(wps_path)
 check_files = glob.glob("*.exe")
 
 if os.path.exists(check_files[0]) and os.path.exists(check_files[1]) and os.path.exists(check_files[2]):
@@ -65,6 +66,5 @@ else:
     {LD_LIBRARY_PATH}
     {NETCDF} 
     {PNETCDF} 
-    {HDF5} 
-    {PHDF5} 
+    {JASPERLIB} 
     ''')
