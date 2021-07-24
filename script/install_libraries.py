@@ -1,10 +1,10 @@
-import os, tarfile, subprocess, time
+import os, tarfile, subprocess, time, sys
 
 print(''' 
 --------------------------------------------------------
-WRF model use many supporting libraries, such as jasper, 
-libpng, zlib, hdf5, pnetcdf, and netcdf. These libraries  
-are HIGHLY RECOMMENDED installed them in your machine.
+WRF model use many supporting packages, such as jasper, 
+libpng, hdf5, pnetcdf, and netcdf. These libraries are 
+HIGHLY RECOMMENDED installed them in your machine.
 --------------------------------------------------------
 ''')
 str(input("Do you want continue?"))
@@ -37,17 +37,11 @@ PATH = f"PATH={out_install}/bin:$PATH"
 
 # LIBRARIES INSTALLATION
 
-# 1. ZLIB
-subprocess.run(f"./configure --prefix={out_install}; make check install", cwd=library_files[0] + "/", shell=True)
+# 1. PNG
+subprocess.run(f"{LDFLAGS} {CPPFLAGS} ./configure --prefix={out_install} --with-zlib-prefix={out_install}; make check install", cwd=library_files[0] + "/", shell=True)
 
-# 2. cURL
-subprocess.run(f"./configure --prefix={out_install} --with-libssh --with-zlib={out_install}; make check install", cwd=library_files[1] + "/", shell=True)
-
-# 2. PNG
-subprocess.run(f"{LDFLAGS} {CPPFLAGS} ./configure --prefix={out_install} --with-zlib-prefix={out_install}; make check install", cwd=library_files[2] + "/", shell=True)
-
-# 3. Jasper
-subprocess.run(f"{LDFLAGS} {CPPFLAGS} ./configure --prefix={out_install}; make check install", cwd=library_files[3] + "/", shell=True)
+# 2. Jasper
+subprocess.run(f"{LDFLAGS} {CPPFLAGS} ./configure --prefix={out_install}; make check install", cwd=library_files[1] + "/", shell=True)
 
 use_hdf5 = "Yes"
 
@@ -61,7 +55,7 @@ if use_hdf5 == "No" or use_hdf5 == "no" or use_hdf5 == "n":
 
 elif use_hdf5 == "" or use_hdf5 == "Yes" or use_hdf5 == "Y" or use_hdf5 == "yes":
     #MPICH
-    subprocess.run(f"./configure --prefix={out_install} --with-device=ch3; make; make install", cwd=library_files[4] + "/", shell=True)
+    subprocess.run(f"./configure --prefix={out_install} --with-device=ch3; make; make install", cwd=library_files[2] + "/", shell=True)
     subprocess.run(f"export {PATH}", shell=True)
 
     # HDF5
@@ -71,16 +65,16 @@ elif use_hdf5 == "" or use_hdf5 == "Yes" or use_hdf5 == "Y" or use_hdf5 == "yes"
     hdf5_files = f"{out_install}/bin/h5dump"
     if not(os.path.exists(hdf5_files)):
         print(f"Please check HDF5 installation in {out_install}/bin")
-
+        sys.exit()
     else:
         #Pnetcdf
-        subprocess.run(f"{CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --with-mpi={out_install} --enable-fortran --enable-shared; make; make install", cwd=library_files[6] + "/", shell=True)
+        subprocess.run(f"{CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --with-mpi={out_install} --enable-fortran --enable-shared; make; make install", cwd=library_files[3] + "/", shell=True)
         
         # Netcdf-C
-        subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --enable-dap --enable-parallel-tests --enable-pnetcdf --enable-hdf5; make check; make install", cwd=library_files[7] + "/", shell=True)
+        subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --enable-dap --enable-parallel-tests --enable-pnetcdf --disable-dap; make check; make install", cwd=library_files[4] + "/", shell=True)
 
         # Netcdf-Fortran
-        subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --enable-parallel-tests; make; make install", cwd=library_files[8] + "/", shell=True) 
+        subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} ./configure --prefix={out_install} --enable-parallel-tests; make; make install", cwd=library_files[5] + "/", shell=True) 
 
 # Checking libraries
 subprocess.run(f"{PATH}", shell=True)
@@ -95,7 +89,7 @@ if os.path.exists(check_files[0]) and os.path.exists(check_files[1]) and os.path
     print(f'''
     ------------------------------------------------
 
-    !!!!  Libraries were installed successfully  !!!
+    !!!!  Packages were installed successfully  !!!
 
     ------------------------------------------------
 
