@@ -54,7 +54,7 @@ subprocess.run(f"export {JASPERINC}; export {FC}; export {JASPERLIB}; export {NE
 check_files = glob.glob(wrf_dir + "/main/*.exe")
 
 if os.path.exists(check_files[0]) and os.path.exists(check_files[1]) and os.path.exists(check_files[2]) and os.path.exists(check_files[3]):
-    print(f'''
+    print(f''' \033[32m
     ------------------------------------------------
 
     !!!!     WRF was installed successfully     !!!!
@@ -62,7 +62,7 @@ if os.path.exists(check_files[0]) and os.path.exists(check_files[1]) and os.path
     ------------------------------------------------
     ''')
 else:
-    print(f''' 
+    print(f'''  \033[31m
     Please check the environment/variable of LIBRARIES:
     {NETCDF},
     {PNETCDF}, 

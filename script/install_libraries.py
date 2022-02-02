@@ -104,7 +104,7 @@ stp = time.localtime(); stp = time.strftime("%Y-%m-%d %H:%M %z", stp)
 
 if os.path.exists(check_files[0]) and os.path.exists(check_files[1]) and os.path.exists(check_files[2]) and os.path.exists(check_files[3]):
 
-    print(f'''
+    print(f''' \033[32m
     ------------------------------------------------
 
     !!!!  Packages were installed successfully  !!!
@@ -118,7 +118,7 @@ if os.path.exists(check_files[0]) and os.path.exists(check_files[1]) and os.path
     ''')
 
 else:
-    print(f''' 
+    print(f'''  \033[31m
     Please check the installation LIBRARIES:
     ''')
     sys.exit()
