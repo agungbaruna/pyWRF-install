@@ -1,4 +1,5 @@
 import os, subprocess, glob
+from tracemalloc import stop
 
 user_computer = os.environ["HOME"]
 
@@ -47,21 +48,26 @@ HDF5      = f"HDF5={out_lib}"
 PHDF5     = f"PHDF5={out_lib}"
 
 # Installing WPS
-subprocess.run(f"export {JASPERINC}; export {JASPERLIB}; export {NETCDF}; export {PNETCDF}; export {HDF5}; export {PHDF5}; export {PATH}; export {LD_LIBRARY_PATH}; export {LDFLAGS}; export {CPPFLAGS}; ./configure; ./compile", shell=True, cwd=wps_dir)
+subprocess.run(f"export {JASPERINC}; export {JASPERLIB}; export {NETCDF}; export {PNETCDF}; export {HDF5}; export {PHDF5}; export {PATH}; export {LD_LIBRARY_PATH}; export {LDFLAGS}; export {CPPFLAGS}; ./configure; sed -i.change -r 's/-lnetcdff/-lnetcdff -lgomp/g' configure.wps; ./compile", shell=True, cwd=wps_dir)
+subprocess.run(["sed -i.change -r 's/-lnetcdff/-lnetcdff -lgomp/g' configure.wps"], shell=True)
+subprocess.run(f"export {JASPERINC}; export {JASPERLIB}; export {NETCDF}; export {PNETCDF}; export {HDF5}; export {PHDF5}; export {PATH}; export {LD_LIBRARY_PATH}; export {LDFLAGS}; export {CPPFLAGS}; ./compile", shell=True, cwd=wps_dir)
 
 # Check programs
 check_files = glob.glob("*.exe")
 
 if os.path.exists(check_files[0]) and os.path.exists(check_files[1]) and os.path.exists(check_files[2]):
-    print(f'''
+    print(f''' \033[32m
     ------------------------------------------------
 
     !!!!     WPS was installed successfully     !!!!
 
     ------------------------------------------------
     ''')
+elif os.path.exists(check_files[0]) or os.path.exists(check_files[1]) or os.path.exists(check_files[2]):
+    print(f"Please check {check_files[0]}, {check_files[1]}, and {check_files[2]} are exists !!!!!")
+    stop
 else:
-    print(f''' 
+    print(f''' \033[31m
     Please check the environment/variable of LIBRARIES:
     {LD_LIBRARY_PATH}
     {NETCDF} 
