@@ -54,6 +54,7 @@ CPPFLAGS = f"CPPFLAGS=-I/{out_lib}/include"
 LDFLAGS  = f'LDFLAGS="-L/{out_lib}/lib -L/usr/lib/x86_64-linux-gnu"' 
 CC       = f"CC=/usr/bin/mpicc"
 PATH     = f"PATH={out_lib}/bin:$PATH"
+FC       = f"FC=/usr/bin/mpifort"
 
 # LIBRARIES INSTALLATION
 # Create folder 
@@ -92,7 +93,7 @@ elif use_hdf5 == "" or use_hdf5 == "Yes" or use_hdf5 == "Y" or use_hdf5 == "yes"
         subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} {LD_LIBRARY_PATH} ./configure --prefix={out_lib} --enable-dap --enable-parallel-tests --enable-pnetcdf --disable-dap; make; make install", cwd=library_files[4] + "/", shell=True)
 
         # Netcdf-Fortran
-        subprocess.run(f"{CC} {CPPFLAGS} {LDFLAGS} {LD_LIBRARY_PATH} ./configure --prefix={out_lib} --enable-parallel-tests; make; make install", cwd=library_files[5] + "/", shell=True) 
+        subprocess.run(f"{CC} {FC} {CPPFLAGS} {LDFLAGS} {LD_LIBRARY_PATH} ./configure --prefix={out_lib}; make; make install", cwd=library_files[5] + "/", shell=True) 
 
 # Checking libraries
 subprocess.run(f"export={PATH}", shell=True)
