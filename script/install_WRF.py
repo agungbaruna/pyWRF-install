@@ -3,7 +3,9 @@ import os, subprocess, glob
 user_computer = os.environ["HOME"]
 
 #WRF installed location
-out_lib = str(input(f"Type the directory of libraries were installed [default: {user_computer}/WRF-install]: "))
+out_lib = str(input(f'''
+Type the directory of libraries were installed [default: {user_computer}/WRF-install]: 
+'''))
 
 if out_lib == "" : 
     out_install = user_computer + "/WRF-install"

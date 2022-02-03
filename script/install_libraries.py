@@ -54,7 +54,7 @@ CPPFLAGS = f"CPPFLAGS=-I/{out_lib}/include"
 LDFLAGS  = f'LDFLAGS="-L/{out_lib}/lib -L/usr/lib/x86_64-linux-gnu"' 
 CC       = f"CC=/usr/bin/mpicc"
 PATH     = f"PATH={out_lib}/bin:$PATH"
-FC       = f"FC=/usr/bin/mpifort"
+FC       = f"FC=/usr/bin/mpif90"
 
 # LIBRARIES INSTALLATION
 # Create folder 
