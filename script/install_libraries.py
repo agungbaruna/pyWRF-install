@@ -7,14 +7,13 @@ libpng, hdf5, pnetcdf, and netcdf. These libraries are
 HIGHLY RECOMMENDED to install in your machine.
 --------------------------------------------------------
 ''')
-str(input("Do you want continue [press ENTER]?"))
+str(input("press ENTER to continue or CTRL+C to stop !"))
 
 user_computer = os.environ["HOME"]
 
 out_dir = str(input(f'''
-Choose the desired directory location (default: {user_computer})
-Your computer username is {user_computer}
-Type directory [press ENTER for choosing default directory]: 
+The installation directory will be located at {user_computer}, named WRF-install.
+Press ENTER to continue or CTRL+C to stop !
 '''))
 
 if out_dir == "": out_dir = user_computer
@@ -29,9 +28,9 @@ out_install = out_dir + "/WRF-install"
 # Check folder name
 if not(os.path.exists(out_install)):
     os.makedirs(out_install)
-else: 
-    print("!!!!! Change your directory location or rename 'WRF-install' !!!!!")
-    sys.exit() 
+else:
+    # If WRF-install dir exist, change WRF-install name 
+    subprocess.run(f"mv -r {user_computer}/WRF-install {user_computer}/WRF-install-backup", shell=True) 
 
 # Extract each Libraries file
 out_lib = out_install + "/LIBRARIES"
@@ -96,8 +95,6 @@ elif use_hdf5 == "" or use_hdf5 == "Yes" or use_hdf5 == "Y" or use_hdf5 == "yes"
         subprocess.run(f"{CC} {FC} {CPPFLAGS} {LDFLAGS} {LD_LIBRARY_PATH} ./configure --prefix={out_lib}; make; make install", cwd=library_files[5] + "/", shell=True) 
 
 # Checking libraries
-subprocess.run(f"export={PATH}", shell=True)
-
 check_files = [f"{out_lib}/bin/nc-config", f"{out_lib}/bin/nf-config", f"{out_lib}/bin/pnetcdf-config", f"{out_lib}/bin/h5dump"] 
 
 #Stop time
@@ -126,6 +123,3 @@ else:
 
 #Back to current directory
 os.chdir(cur_dir)
-
-# Download WRF & WPS model
-subprocess.run("git clone https://github.com/wrf-model/WPS", shell=True)
